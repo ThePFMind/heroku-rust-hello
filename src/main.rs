@@ -13,15 +13,18 @@ fn greet(req: HttpRequest) -> impl Responder {
 fn main() {
     dotenv().ok();
 
-    let bind_address = env::var("BIND_ADDRESS").expect("BIND_ADDRESS is not set");
+    let port = env::var("PORT")
+        .unwrap_or_else(|_| "3000".to_string())
+        .parse()
+        .expect("PORT must be a number");
 
     HttpServer::new(|| {
         App::new()
             .route("/", web::get().to(greet))
             .route("/{name}", web::get().to(greet))
     })
-    .bind(&bind_address)
-    .unwrap_or_else(|_| panic!("Could not bind server to address {}", &bind_address))
+    .bind(("0.0.0.0", port))
+    .unwrap_or_else(|_| panic!("Could not bind server to poty {}", &port))
     .run()
     .unwrap();
 }
