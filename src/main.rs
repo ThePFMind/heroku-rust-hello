@@ -1,3 +1,8 @@
+extern crate dotenv;
+
+use dotenv::dotenv;
+use std::env;
+
 use actix_web::{web, App, HttpRequest, HttpServer, Responder};
 
 fn greet(req: HttpRequest) -> impl Responder {
@@ -6,13 +11,17 @@ fn greet(req: HttpRequest) -> impl Responder {
 }
 
 fn main() {
+    dotenv().ok();
+
+    let bind_address = env::var("BIND_ADDRESS").expect("BIND_ADDRESS is not set");
+
     HttpServer::new(|| {
         App::new()
             .route("/", web::get().to(greet))
             .route("/{name}", web::get().to(greet))
     })
-    .bind("127.0.0.1:8000")
-    .expect("Can not bind to port 8000")
+    .bind(&bind_address)
+    .unwrap_or_else(|_| panic!("Could not bind server to address {}", &bind_address))
     .run()
     .unwrap();
 }
