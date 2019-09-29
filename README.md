@@ -10,12 +10,17 @@ $ heroku login
 $ heroku git:remote -a heroku-rust-hello
 $ heroku create --buildpack emk/rust
 $ heroku buildbpacks:set emk/rust
+```
+
+Set config vars PORT=80
+
+```bash
 $ git push heroku master
 ```
 ## Combining with other buildpacks
 
 ```bash
-$ heroku buildpacks:add --index 1 https://git.heroku.com/heroku-rust-hello.git
+$ heroku logs --tail
 ```
 
 ## Contributing
